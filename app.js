@@ -71,76 +71,105 @@
   const imageImage = document.getElementById('image-image');
   const homeOverlay = document.getElementById('home-overlay');
   const shareMenu = document.getElementById('share-menu');
+  const frameWrap = document.getElementById('frame-screens');
+  const flipCard = document.getElementById('flip-card');
+  const frontFace = flipCard.querySelector('.flip-front');
+  const backFace = flipCard.querySelector('.flip-back');
+  const cardCover = document.getElementById('card-cover');
 
-  function showScreen(name) {
-    Object.values(screens).forEach(s => s.classList.remove('is-active'));
-    screens[name].classList.add('is-active');
+  function srcOf(name) {
+    return (name === 'fact' ? factImage : imageImage).src;
+  }
+
+  // הצגה ישירה (ללא היפוך): מסך הבית או אחד ממסכי הפריים
+  function showHome() {
+    screens.home.classList.add('is-active');
+    frameWrap.classList.remove('is-shown');
+    window.scrollTo(0, 0);
+  }
+
+  function showFrame(name) {
+    screens.home.classList.remove('is-active');
+    frameWrap.classList.add('is-shown');
+    screens.fact.style.display = name === 'fact' ? 'block' : 'none';
+    screens.image.style.display = name === 'image' ? 'block' : 'none';
+    screens.fact.style.opacity = '';
+    screens.image.style.opacity = '';
     window.scrollTo(0, 0);
   }
 
   function goHome() {
     closeShareMenu();
-    showScreen('home');
+    showHome();
   }
 
   function openFact(category, index) {
     current = { category, index };
     factImage.src = imagePath(category, 'עובדה', index);
     factImage.alt = `${category} עובדה ${index}`;
-    showScreen('fact');
+    showFrame('fact');
   }
 
-  // מעבר עם אנימציית היפוך כרטיס (rotateY) — רק הריבוע המרכזי מסתובב ומחליף תוכן.
-  // ה-flipCard מציג חיתוך של אזור הכרטיס מתוך התמונה המלאה; הרקע (לוגו/כותרת תחתונה)
-  // והכפתורים מתחלפים בנקודת ה-90° כשהכרטיס "על הצד" ולא נראה.
-  const flipCard = document.getElementById('flip-card');
+  // היפוך כרטיס תלת-ממדי אמיתי: חזית = הכרטיס הנוכחי, גב = כרטיס היעד.
+  // הסיבוב רציף (0→180°), כיסוי לבן מסתיר את הכרטיס המוטבע ברקע כך שלא רואים
+  // את הכרטיס שמאחור, וכל מה שמסביב (כפתורים) עובר בחפיפת opacity חלקה.
+  let flipping = false;
 
-  function setFlipCardImage(src) {
-    flipCard.style.backgroundImage = `url("${src}")`;
-  }
+  function flipTo(fromName, toName) {
+    if (flipping) return;
+    flipping = true;
+    const fromEl = screens[fromName];
+    const toEl = screens[toName];
+    const fromSrc = srcOf(fromName);
+    const toSrc = srcOf(toName);
 
-  function flipTransition(fromSrc, swapFn, getToSrc) {
-    setFlipCardImage(fromSrc);
-    // reflow כדי לאתחל את האנימציה
-    void flipCard.offsetWidth;
-    flipCard.classList.add('flip-out');
-    const onOut = () => {
-      flipCard.removeEventListener('animationend', onOut);
-      flipCard.classList.remove('flip-out');
-      swapFn();
-      setFlipCardImage(getToSrc());
-      void flipCard.offsetWidth;
-      flipCard.classList.add('flip-in');
-      const onIn = () => {
-        flipCard.removeEventListener('animationend', onIn);
-        flipCard.classList.remove('flip-in');
-        // לנקות display מוטבע כדי שכלל ה-CSS הבסיסי (display:none) יחזור לשלוט,
-        // אחרת ההיפוך הבא יתרחש על אלמנט מוסתר וה-animationend לא יורה.
-        flipCard.style.display = '';
+    // טעינה מוקדמת של תמונת היעד כדי שגב הכרטיס לא יופיע ריק
+    const pre = new Image();
+    pre.onload = pre.onerror = () => {
+      frontFace.style.backgroundImage = `url("${fromSrc}")`;
+      backFace.style.backgroundImage = `url("${toSrc}")`;
+
+      // שני המסכים גלויים יחד לצורך החפיפה
+      fromEl.style.display = 'block';
+      toEl.style.display = 'block';
+      fromEl.style.opacity = '1';
+      toEl.style.opacity = '0';
+
+      cardCover.style.display = 'block';
+      flipCard.classList.remove('flipping');
+      flipCard.style.display = 'block';
+      void flipCard.offsetWidth; // reflow לאיתחול האנימציה והחפיפה
+
+      flipCard.classList.add('flipping');
+      toEl.style.opacity = '1';
+      fromEl.style.opacity = '0';
+
+      const onEnd = () => {
+        flipCard.removeEventListener('animationend', onEnd);
+        flipCard.classList.remove('flipping');
+        flipCard.style.display = 'none';
+        cardCover.style.display = 'none';
+        // קיבוע מצב סופי: רק מסך היעד מוצג
+        fromEl.style.display = 'none';
+        fromEl.style.opacity = '';
+        toEl.style.opacity = '';
+        flipping = false;
       };
-      flipCard.addEventListener('animationend', onIn);
+      flipCard.addEventListener('animationend', onEnd);
     };
-    flipCard.addEventListener('animationend', onOut);
+    pre.src = toSrc;
   }
 
   function openImage() {
     if (!current.category) return;
-    const fromSrc = factImage.src;
-    flipTransition(
-      fromSrc,
-      () => {
-        imageImage.src = imagePath(current.category, 'דימוי', current.index);
-        imageImage.alt = `${current.category} דימוי ${current.index}`;
-        showScreen('image');
-      },
-      () => imageImage.src,
-    );
+    imageImage.src = imagePath(current.category, 'דימוי', current.index);
+    imageImage.alt = `${current.category} דימוי ${current.index}`;
+    flipTo('fact', 'image');
   }
 
   function backToFact() {
     closeShareMenu();
-    const fromSrc = imageImage.src;
-    flipTransition(fromSrc, () => showScreen('fact'), () => factImage.src);
+    flipTo('image', 'fact');
   }
 
   // --- בניית הריבועים השקופים על מסך הבית ---
@@ -266,5 +295,5 @@
   });
 
   buildHomeOverlay();
-  showScreen('home');
+  showHome();
 })();

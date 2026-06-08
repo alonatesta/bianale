@@ -44,41 +44,77 @@ html, body {
   margin-top: -70px;
 }
 
-/* --- כרטיס מתהפך: רק אזור הכרטיס המרכזי מסתובב במעבר עובדה <-> דימוי --- */
+/* --- אזור הפריים (עובדה/דימוי) --- */
+#frame-screens {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 390 / 733;
+  display: none;
+  perspective: 1400px;
+}
+
+#frame-screens.is-shown {
+  display: block;
+}
+
+#frame-screens .screen {
+  position: absolute;
+  inset: 0;
+  display: block;
+}
+
+/* חפיפת מעבר חלקה של כל מה שמסביב לכרטיס (כפתורים וכו') */
+#screen-fact,
+#screen-image {
+  transition: opacity 0.5s ease;
+}
+
+/* כיסוי לבן מעל אזור הכרטיס בזמן ההיפוך — מסתיר את הכרטיס המוטבע ברקע */
+#card-cover {
+  position: absolute;
+  left: 8%;
+  top: 13%;
+  width: 84%;
+  height: 62%;
+  background: #ffffff;
+  z-index: 5;
+  display: none;
+}
+
+/* --- כרטיס מתהפך תלת-ממדי: רק הכרטיס המרכזי מסתובב --- */
 #flip-card {
   position: absolute;
   left: 10.77%;
   top: 15.96%;
   width: 80.77%;
   height: 56.48%;
-  z-index: 5;
+  z-index: 6;
   display: none;
-  background-repeat: no-repeat;
-  background-size: 123.81% 177.05%;
-  background-position: 56% 36.68%;
+  transform-style: preserve-3d;
   transform-origin: center center;
-  backface-visibility: hidden;
   pointer-events: none;
 }
 
-#flip-card.flip-out {
-  display: block;
-  animation: card-flip-out 0.26s ease-in forwards;
+.flip-face {
+  position: absolute;
+  inset: 0;
+  backface-visibility: hidden;
+  background-repeat: no-repeat;
+  background-size: 123.81% 177.05%;
+  background-position: 56% 36.68%;
 }
 
-#flip-card.flip-in {
-  display: block;
-  animation: card-flip-in 0.26s ease-out forwards;
+.flip-back {
+  transform: rotateY(180deg);
 }
 
-@keyframes card-flip-out {
+#flip-card.flipping {
+  animation: card-flip 0.55s ease-in-out forwards;
+}
+
+@keyframes card-flip {
   from { transform: rotateY(0deg); }
-  to   { transform: rotateY(90deg); }
-}
-
-@keyframes card-flip-in {
-  from { transform: rotateY(-90deg); }
-  to   { transform: rotateY(0deg); }
+  to   { transform: rotateY(180deg); }
 }
 
 .frame-image {

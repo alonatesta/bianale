@@ -17,27 +17,36 @@
       </div>
     </section>
 
-    <!-- מסך עובדה -->
-    <section id="screen-fact" class="screen screen-frame">
-      <img id="fact-image" class="frame-image" src="" alt="">
-      <div class="overlay">
-        <button class="hot back-arrow" data-action="go-home" aria-label="חזרה למסך הבית"></button>
-        <button class="hot discover-btn" data-action="discover-image" aria-label="גלה את הדימוי"></button>
-      </div>
-    </section>
+    <!-- מסכי הפריים (עובדה/דימוי) — חולקים אזור אחד כדי לאפשר היפוך כרטיס וחפיפת מעבר -->
+    <div id="frame-screens">
+      <!-- מסך עובדה -->
+      <section id="screen-fact" class="screen screen-frame">
+        <img id="fact-image" class="frame-image" src="" alt="">
+        <div class="overlay">
+          <button class="hot back-arrow" data-action="go-home" aria-label="חזרה למסך הבית"></button>
+          <button class="hot discover-btn" data-action="discover-image" aria-label="גלה את הדימוי"></button>
+        </div>
+      </section>
 
-    <!-- מסך דימוי -->
-    <section id="screen-image" class="screen screen-frame">
-      <img id="image-image" class="frame-image" src="" alt="">
-      <div class="overlay">
-        <button class="hot back-arrow" data-action="go-home" aria-label="חזרה למסך הבית"></button>
-        <button class="hot back-to-fact-btn" data-action="back-to-fact" aria-label="חזרה לעובדה"></button>
-        <button class="hot share-btn" data-action="open-share" aria-label="שיתוף"></button>
-      </div>
-    </section>
+      <!-- מסך דימוי -->
+      <section id="screen-image" class="screen screen-frame">
+        <img id="image-image" class="frame-image" src="" alt="">
+        <div class="overlay">
+          <button class="hot back-arrow" data-action="go-home" aria-label="חזרה למסך הבית"></button>
+          <button class="hot back-to-fact-btn" data-action="back-to-fact" aria-label="חזרה לעובדה"></button>
+          <button class="hot share-btn" data-action="open-share" aria-label="שיתוף"></button>
+        </div>
+      </section>
 
-    <!-- כרטיס מתהפך (מעבר עובדה <-> דימוי) -->
-    <div id="flip-card" aria-hidden="true"></div>
+      <!-- כיסוי לבן שמסתיר את הכרטיס המוטבע ברקע בזמן ההיפוך -->
+      <div id="card-cover" aria-hidden="true"></div>
+
+      <!-- כרטיס מתהפך תלת-ממדי (חזית = הכרטיס הנוכחי, גב = כרטיס היעד) -->
+      <div id="flip-card" aria-hidden="true">
+        <div class="flip-face flip-front"></div>
+        <div class="flip-face flip-back"></div>
+      </div>
+    </div>
 
     <!-- תפריט שיתוף -->
     <div id="share-menu" class="share-menu" hidden>
