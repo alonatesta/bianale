@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>דוט טו דוט</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <div id="app">
+    <!-- מסך הבית -->
+    <section id="screen-home" class="screen screen-home is-active">
+      <div class="home-logo" role="img" aria-label="דוט טו דוט"></div>
+      <div class="home-body">
+        <img class="frame-image" src="png/מסך בית.jpg" alt="מסך בית">
+        <div id="home-overlay" class="overlay"></div>
+      </div>
+    </section>
+
+    <!-- מסך עובדה -->
+    <section id="screen-fact" class="screen screen-frame">
+      <img id="fact-image" class="frame-image" src="" alt="">
+      <div class="overlay">
+        <button class="hot back-arrow" data-action="go-home" aria-label="חזרה למסך הבית"></button>
+        <button class="hot discover-btn" data-action="discover-image" aria-label="גלה את הדימוי"></button>
+      </div>
+    </section>
+
+    <!-- מסך דימוי -->
+    <section id="screen-image" class="screen screen-frame">
+      <img id="image-image" class="frame-image" src="" alt="">
+      <div class="overlay">
+        <button class="hot back-arrow" data-action="go-home" aria-label="חזרה למסך הבית"></button>
+        <button class="hot back-to-fact-btn" data-action="back-to-fact" aria-label="חזרה לעובדה"></button>
+        <button class="hot share-btn" data-action="open-share" aria-label="שיתוף"></button>
+      </div>
+    </section>
+
+    <!-- כרטיס מתהפך (מעבר עובדה <-> דימוי) -->
+    <div id="flip-card" aria-hidden="true"></div>
+
+    <!-- תפריט שיתוף -->
+    <div id="share-menu" class="share-menu" hidden>
+      <div class="share-menu-backdrop" data-action="close-share"></div>
+      <div class="share-menu-panel">
+        <button class="share-menu-option" data-action="do-share">שתף</button>
+        <button class="share-menu-option" data-action="do-save">שמור לטלפון</button>
+        <button class="share-menu-cancel" data-action="close-share">ביטול</button>
+      </div>
+    </div>
+  </div>
+
+  <script src="app.js"></script>
+</body>
+</html>

@@ -1,0 +1,199 @@
+* {
+  box-sizing: border-box;
+}
+
+html, body {
+  margin: 0;
+  padding: 0;
+  background: #ffffff;
+  font-family: 'Heebo', 'Arial Hebrew', Arial, sans-serif;
+}
+
+#app {
+  max-width: 390px;
+  margin: 0 auto;
+  position: relative;
+  perspective: 1400px;
+}
+
+.screen {
+  position: relative;
+  width: 100%;
+  display: none;
+  transform-origin: center center;
+  backface-visibility: hidden;
+}
+
+.screen.is-active {
+  display: block;
+}
+
+/* --- מסך הבית: לוגו קבוע למעלה שלא נגלל --- */
+.home-logo {
+  position: sticky;
+  top: 0;
+  z-index: 10;
+  height: 70px;
+  background: #ffffff url("png/מסך בית.jpg") no-repeat top center;
+  background-size: 100% auto;
+}
+
+.home-body {
+  position: relative;
+  /* מושך את התמונה כלפי מעלה כך שהלוגו המוטבע בה מוסתר מאחורי הלוגו הקבוע */
+  margin-top: -70px;
+}
+
+/* --- כרטיס מתהפך: רק אזור הכרטיס המרכזי מסתובב במעבר עובדה <-> דימוי --- */
+#flip-card {
+  position: absolute;
+  left: 10.77%;
+  top: 15.96%;
+  width: 80.77%;
+  height: 56.48%;
+  z-index: 5;
+  display: none;
+  background-repeat: no-repeat;
+  background-size: 123.81% 177.05%;
+  background-position: 56% 36.68%;
+  transform-origin: center center;
+  backface-visibility: hidden;
+  pointer-events: none;
+}
+
+#flip-card.flip-out {
+  display: block;
+  animation: card-flip-out 0.26s ease-in forwards;
+}
+
+#flip-card.flip-in {
+  display: block;
+  animation: card-flip-in 0.26s ease-out forwards;
+}
+
+@keyframes card-flip-out {
+  from { transform: rotateY(0deg); }
+  to   { transform: rotateY(90deg); }
+}
+
+@keyframes card-flip-in {
+  from { transform: rotateY(-90deg); }
+  to   { transform: rotateY(0deg); }
+}
+
+.frame-image {
+  display: block;
+  width: 100%;
+  height: auto;
+}
+
+.overlay {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+}
+
+.hot {
+  position: absolute;
+  background: transparent;
+  border: none;
+  margin: 0;
+  padding: 0;
+  cursor: pointer;
+  pointer-events: auto;
+  -webkit-tap-highlight-color: rgba(0, 0, 0, 0.08);
+}
+
+.hot:focus-visible {
+  outline: 2px solid #cf2e2e;
+  outline-offset: 2px;
+}
+
+/* מיקומי הכפתורים על מסכי עובדה/דימוי (פריים 390x733) */
+.back-arrow {
+  left: 86%;
+  top: 1.5%;
+  width: 12%;
+  height: 8%;
+}
+
+.discover-btn {
+  left: 30%;
+  top: 78%;
+  width: 45%;
+  height: 9%;
+}
+
+.back-to-fact-btn {
+  left: 48%;
+  top: 78%;
+  width: 35%;
+  height: 9%;
+}
+
+.share-btn {
+  left: 18%;
+  top: 78%;
+  width: 25%;
+  height: 9%;
+}
+
+/* תפריט שיתוף */
+.share-menu {
+  position: fixed;
+  inset: 0;
+  z-index: 100;
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+}
+
+.share-menu[hidden] {
+  display: none;
+}
+
+.share-menu-backdrop {
+  position: absolute;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.35);
+  border: none;
+  padding: 0;
+  margin: 0;
+  cursor: pointer;
+}
+
+.share-menu-panel {
+  position: relative;
+  width: 100%;
+  max-width: 390px;
+  background: #ffffff;
+  border-radius: 16px 16px 0 0;
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  box-shadow: 0 -4px 24px rgba(0, 0, 0, 0.15);
+}
+
+.share-menu-option,
+.share-menu-cancel {
+  font-family: inherit;
+  font-size: 17px;
+  padding: 14px;
+  border-radius: 10px;
+  border: 1px solid #e0e0e0;
+  background: #fafafa;
+  cursor: pointer;
+  color: #222;
+}
+
+.share-menu-option:hover,
+.share-menu-cancel:hover {
+  background: #f0f0f0;
+}
+
+.share-menu-cancel {
+  color: #cf2e2e;
+  border-color: transparent;
+  background: transparent;
+}
