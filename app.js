@@ -216,18 +216,24 @@
       const { frameW, logo, card, pad, gap } = COMPOSE;
       const img = new Image();
       img.onload = () => {
-        const W = frameW;
-        const H = pad + logo.sh + gap + card.sh + pad;
+        // הקואורדינטות מוגדרות במרחב 390x733; התמונות בפועל עשויות להיות
+        // ברזולוציה גבוהה יותר (למשל 1560x2932). מתאימים את החיתוך לפי הגודל האמיתי.
+        const s = (img.naturalWidth || frameW) / frameW;
+        const sc = (r) => ({ sx: r.sx * s, sy: r.sy * s, sw: r.sw * s, sh: r.sh * s });
+        const L = sc(logo);
+        const C = sc(card);
+        const P = pad * s;
+        const G = gap * s;
+        const W = frameW * s;
+        const H = P + L.sh + G + C.sh + P;
         const canvas = document.createElement('canvas');
         canvas.width = W;
         canvas.height = H;
         const ctx = canvas.getContext('2d');
         ctx.fillStyle = '#ffffff';
         ctx.fillRect(0, 0, W, H);
-        ctx.drawImage(img, logo.sx, logo.sy, logo.sw, logo.sh,
-          (W - logo.sw) / 2, pad, logo.sw, logo.sh);
-        ctx.drawImage(img, card.sx, card.sy, card.sw, card.sh,
-          (W - card.sw) / 2, pad + logo.sh + gap, card.sw, card.sh);
+        ctx.drawImage(img, L.sx, L.sy, L.sw, L.sh, (W - L.sw) / 2, P, L.sw, L.sh);
+        ctx.drawImage(img, C.sx, C.sy, C.sw, C.sh, (W - C.sw) / 2, P + L.sh + G, C.sw, C.sh);
         canvas.toBlob((blob) => blob ? resolve(blob) : reject(new Error('toBlob failed')), 'image/jpeg', 0.92);
       };
       img.onerror = () => reject(new Error('image load failed'));
